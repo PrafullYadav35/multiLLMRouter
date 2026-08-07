@@ -1,0 +1,17 @@
+{
+  "name": "multillmrouter",
+  "version": "1.0.0",
+  "description": "projects integrate multiple LLM ",
+  "license": "ISC",
+  "author": "Prafull Kumar Yadav",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.9.1"
+  }
+}
