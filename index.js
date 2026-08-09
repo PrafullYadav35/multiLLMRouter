@@ -11,12 +11,15 @@ app.listen(port,(req,res)=>{
     console.log(`server is Listening on port ${port}`);
 })
 
+
+
+connection();
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/users",userRouter);
 
-connection();
+
 
 app.get("/",(req,res)=>{
     console.log("Hello MultiLLM Router ");
