@@ -3,6 +3,7 @@ const app= express();
 
 import User from "../models/userSchema.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
 // import  jwt from "jsonwebtoken";
 // import { configDotenv } from "dotenv";
 
@@ -21,12 +22,41 @@ export const signup=async (req,res)=>{
  
     try{
        const{name,email,password}=req.body;
+
+       if(!name || !email || !password){
+        return res.status(400).json({
+            sucess:false,
+            message:"Name , email and password are required "
+        });
+       }
+
+       if(password.length <8 ){
+        return res.status(422).json({
+            sucess:false,
+            message:"password must be at least charters"
+        })
+       }
+        
+       //check is this email already exist in databse before create 
+       const existingUser=await User.findOne({email});
+
+       if(!existingUser){
+        return res.status(409).json({
+            sucess:false,
+            message:"Email already exist",
+        })
+       }
+
+
+
+
        const hashedPassword =await bcrypt.hash(password,10);
        const u= new User({
            name,email,password:hashedPassword
        })
        await u.save().then((data)=>console.log('user created sucessfully ',data));
-       console.log(u);
+       //console.log(u);
+
       const token = createToken(u._id);
       res.cookie('token',token,cookieOptions);
       console.log(req.cookies);
@@ -41,7 +71,12 @@ export const signup=async (req,res)=>{
        }
       });
     }catch(err){
+
        console.log(err.message);
+       return res.status(500).json({
+        sucess:false,
+        message:"Internal Server Error",
+       });
    
     }
    
@@ -50,15 +85,22 @@ export const signup=async (req,res)=>{
 
 
 export const login = async (req,res)=>{
-    //is user exist in db
+    try{
     const{email,password}= req.body;
+
+    if(!email || !password){
+        return res.status(400).json({
+            message:"Email and Password are required "
+        });
+    }
+    //is user exist in db
     const user =await User.findOne({email});
     if(!user){
      return res.status(401).json({message:"Incorrect username or Pssword"});
  
     }
     //is password correct
- //    console.log(user);
+    // console.log(user);
     const  compare = await bcrypt.compare(password,user.password);
     if(!compare){
      return res.status(401).json({message:"Incorrect username or Password"});
@@ -72,10 +114,15 @@ export const login = async (req,res)=>{
     res.cookie("token",token,cookieOptions);
     //show logged in 
     res.json({message:"User logged in"});
+    }catch(err){
+        res.status(500).json({
+            message:err.message
+        });
+    }
  }
 
  export const getProfile= async (req,res)=>{
-    //check is user logged in 
+  
  res.json({message:"User Profile",
     user:req.user
  });

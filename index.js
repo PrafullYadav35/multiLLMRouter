@@ -6,26 +6,36 @@ import cookieParser from "cookie-parser";
 configDotenv();
 import {userRouter} from "./routes/userRouter.js";
 
-const port=4000
-app.listen(port,(req,res)=>{
-    console.log(`server is Listening on port ${port}`);
-})
 
-
-
-connection();
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/users",userRouter);
 
-
+const port=4000
 
 app.get("/",(req,res)=>{
     console.log("Hello MultiLLM Router ");
     res.send("Hi MultiLLm Router");
 })
 
+const startServer=async()=>{
+    try{
+        await connection();
+
+        app.listen(port,(req,res)=>{
+            console.log(`server is Listening on port ${port}`);
+        })
+        
+
+    }catch(error){
+        console.log("server failed to start");
+        console.log(error.message);
+        process.exit(1);
+    }
+}
+
+startServer();
 
 
 

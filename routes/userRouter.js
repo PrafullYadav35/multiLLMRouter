@@ -8,6 +8,7 @@ userRouter.post("/signup",signup)
 
 userRouter.post("/login",login)
 
+  //first using check is user logged in 
 userRouter.get("/profile",checkLogin,getProfile)
 
 userRouter.get("/logout",checkLogin,logout)
