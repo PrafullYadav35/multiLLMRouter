@@ -5,14 +5,18 @@ import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
 configDotenv();
 import {userRouter} from "./routes/userRouter.js";
-
+import chatRouter from "./routes/chatsRouter.js"
+import messageRouter from "./routes/messageRouter.js"
 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use("/users",userRouter);
 
-const port=4000
+app.use("/users",userRouter);
+app.use("/chat",chatRouter);
+app.use("/msa",messageRouter);
+
+const port=4000;
 
 app.get("/",(req,res)=>{
     console.log("Hello MultiLLM Router ");

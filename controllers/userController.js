@@ -4,6 +4,8 @@ const app= express();
 import User from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
+import { signUpSchemna,loginSchema } from "../validators/userValidators.js";
+
 // import  jwt from "jsonwebtoken";
 // import { configDotenv } from "dotenv";
 
@@ -17,9 +19,11 @@ const cookieOptions={
     maxAge:60*60*1000,
 }
 
-
+//Doubt :- why zod schema writtten forst in controllers ? is it right place of it ?
+// what is flow of execurtion between - > mongodbschema, zod sceham validation , conterolles function ,and endpoints/route of api 
 export const signup=async (req,res)=>{
- 
+
+   
     try{
        const{name,email,password}=req.body;
 
@@ -40,7 +44,7 @@ export const signup=async (req,res)=>{
        //check is this email already exist in databse before create 
        const existingUser=await User.findOne({email});
 
-       if(!existingUser){
+       if(existingUser){
         return res.status(409).json({
             sucess:false,
             message:"Email already exist",
@@ -85,6 +89,9 @@ export const signup=async (req,res)=>{
 
 
 export const login = async (req,res)=>{
+
+ 
+
     try{
     const{email,password}= req.body;
 
