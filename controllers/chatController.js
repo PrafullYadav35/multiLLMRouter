@@ -13,7 +13,7 @@ try{
     });
   }
 
-
+//   console.log(req.user);
   const chat= await Chat.create({
     userId:req.user._id,
     model,
@@ -31,7 +31,7 @@ try{
   })
 }
 catch(err){
-    console.log(err.message);
+    // console.log(err.message);
     return res.status(501).json({
         message:"Internal server errror "
     })
@@ -115,7 +115,9 @@ export const deleteChat= async (req,res)=>{
 
     }
     catch(err){
-
+       res.status(500)/json({
+        message:"Internal server error"
+       })
     }
 }
    

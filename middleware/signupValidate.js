@@ -9,7 +9,8 @@ if(!result.success){
         message:result.error.issues[0].message,
     })
 }
-const {name,email,password,age}=result.data;
+// const {name,email,password,age}=result.data;
+  //doubt IS IT IS INCOMPLETE CODE ?
    next();
 }
 

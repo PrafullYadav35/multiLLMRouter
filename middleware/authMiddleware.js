@@ -1,5 +1,4 @@
 import User from "../models/userSchema.js";
-import bcrypt from "bcrypt";
 import  jwt from "jsonwebtoken";
 
 //middleware 
@@ -16,7 +15,7 @@ const checkLogin= async (req,res,next)=>{
     const payload= jwt.verify(token,process.env.JWT_SECRET_KEY);
     const user = await User.findById(payload.id);
     if(!user){
-        return req.status(401).json({
+        return res.status(401).json({
             message:"User no longer exist",
         })
     }

@@ -120,6 +120,8 @@ export const login = async (req,res)=>{
     //send token as cookie 
     res.cookie("token",token,cookieOptions);
     //show logged in 
+     
+    req.user= user;
     res.json({message:"User logged in"});
     }catch(err){
         res.status(500).json({
@@ -129,12 +131,20 @@ export const login = async (req,res)=>{
  }
 
  export const getProfile= async (req,res)=>{
-  
- res.json({message:"User Profile",
-    user:req.user
- });
-}
+  try{
 
+    res.json({message:"User Profile",
+        user:req.user
+     });
+  }catch(err){
+    console.log(err.message);
+
+    res.status(500).json({
+        message:"Internal Server error "
+    })
+  }
+ 
+}
 
 
 export const logout =  async (req,res)=>{
@@ -147,4 +157,48 @@ export const logout =  async (req,res)=>{
         message:"User log out Sucessfully"
     })
 
+<<<<<<< HEAD
+=======
+}
+
+export const deleteUser = async(req,res)=>{
+
+    try{
+       //check user logged in 
+        const {userId}= req.user._id;
+
+        const user= User.findById(userId);
+        if(!user){
+            return res.status(404).json({
+                message:"User doesnot exist"
+            })
+        }
+        //delete message of users 
+        await Message.deleteMany({userId:userId}).catch((err)=>console.log(err.message));
+        //delete chats of users
+        await Chat.deleteMany({userId:userId}).catch((err)=>console.log(err.message));
+        //delete user
+        await User.deleteOne({_id:userId}).catch((err)=>console.log(err.message));
+        
+        
+
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false,
+          });
+
+        res.status(200).json({
+            message:"Acoount deleted Sucessfully"
+        })
+          
+    }catch(err){
+
+        console.log(err.message);
+        res.status(500).json({
+            message:"Internal Server error "
+        })
+    }
+    
+   
+>>>>>>> db0bbde (adding llm api and rate limiting to users routes)
 }

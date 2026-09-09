@@ -5,7 +5,7 @@ import { getMessages,sendMessage } from "../controllers/messageController.js";
 const messageRouter = express.Router();
 //DOUBT : express.Router() is function ?
 messageRouter.use(checkLogin)
-messageRouter.get("/:chatid",getMessages)
+messageRouter.get("/:chatId",getMessages)
 messageRouter.post("/:chatId",sendMessage);
 export default messageRouter;
 

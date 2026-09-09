@@ -7,10 +7,12 @@ configDotenv();
 import {userRouter} from "./routes/userRouter.js";
 import chatRouter from "./routes/chatsRouter.js"
 import messageRouter from "./routes/messageRouter.js"
+import {connectRedis} from "./config/redis.js"
 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 
 app.use("/users",userRouter);
 app.use("/chat",chatRouter);
@@ -40,7 +42,7 @@ const startServer=async()=>{
 }
 
 startServer();
-
+connectRedis();
 
 
 //DOUBTS ? 
