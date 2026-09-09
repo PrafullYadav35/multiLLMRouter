@@ -2,5 +2,9 @@
 node_modules
 utility
 Test
+<<<<<<< HEAD
 notes.md
 llmChat
+=======
+notes
+>>>>>>> ea41af3 (user deelte and new chat edge case fix)
