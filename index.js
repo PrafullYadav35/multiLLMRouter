@@ -28,7 +28,7 @@ app.get("/",(req,res)=>{
 const startServer=async()=>{
     try{
         await connection();
-
+        await connectRedis();
         app.listen(port,(req,res)=>{
             console.log(`server is Listening on port ${port}`);
         })
@@ -42,7 +42,7 @@ const startServer=async()=>{
 }
 
 startServer();
-connectRedis();
+
 
 
 //DOUBTS ? 

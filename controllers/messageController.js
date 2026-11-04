@@ -1,8 +1,6 @@
 import express from "express";
 import Chat from "../models/chatSchema.js";
 import Message from "../models/messageSchema.js";
-<<<<<<< HEAD
-=======
 import mongoose from "mongoose";
 
 import { generateAIResponse } from "../services/openRouterService.js";
@@ -16,7 +14,6 @@ import {resetUsageIfNeeded, hasTokenLimitReached,adduserTokenUsage}  from "../ut
 
 
 
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)
 
 export const getMessages= async(req,res)=>{
 try{
@@ -62,17 +59,6 @@ try{
 export const sendMessage=async (req,res)=>{
     try{
         const {chatId}=req.params;
-<<<<<<< HEAD
-        const{content}=req.body;
-        
-        if(!content || content.trim()==""){
-           return res.status(400).json(
-            {
-              message:"Message content is required"  
-            }
-           )
-        }
-=======
         // console.log(chatId);
         const {content}=req.body;
 
@@ -124,22 +110,12 @@ export const sendMessage=async (req,res)=>{
           
          }else{
             //if chat id already exist 
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)
 
         const chat = await Chat.findOne({
             _id:chatId,
             userId:req.user._id,
         })
 
-<<<<<<< HEAD
-        if(!chat){
-            return res.status(400).json(
-                {
-                  message:"Chat not found"   
-                }
-            )
-        }
-=======
             // if(mongoose.Types.ObjectId.isValid(chatId)){
             //     return res.status(400).json({
             //         message:"Invalid chat id",
@@ -174,7 +150,6 @@ export const sendMessage=async (req,res)=>{
       
 
       
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)
 
         const userMessageNumber= chat.messageCount+1;
         const assistantMessageNumber=chat.messageCount+2;
@@ -199,12 +174,6 @@ export const sendMessage=async (req,res)=>{
                 content:content.trim()
             }
         );
-<<<<<<< HEAD
-
-        const dummyReply = "Ai reply will come here later";
-
-=======
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)
         const assistantMessage= await Message.create(
             {
                 chatId:chat._id,
@@ -241,11 +210,8 @@ export const sendMessage=async (req,res)=>{
       
 
     } catch(err){
-<<<<<<< HEAD
-=======
         console.log(err.message );
         console.log(err.stack)
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)
         res.status(500).json({
             message:"Internal server error "
         })
@@ -255,10 +221,3 @@ export const sendMessage=async (req,res)=>{
    
 }
 
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)

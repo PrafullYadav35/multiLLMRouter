@@ -1,6 +1,6 @@
 import { Router } from "express";
 const userRouter =Router();
-import {signup,login,getProfile,logout} from "../controllers/userController.js"
+import {signup,login,getProfile,logout,deleteUser} from "../controllers/userController.js"
 
 
 import checkLogin from "../middleware/authMiddleware.js";

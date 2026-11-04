@@ -58,7 +58,8 @@ export const signup=async (req,res)=>{
        const u= new User({
            name,email,password:hashedPassword
        })
-       await u.save().then((data)=>console.log('user created sucessfully ',data));
+       await u.save();
+    //    .then((data)=>console.log('user created sucessfully ',data));
        //console.log(u);
 
       const token = createToken(u._id);
@@ -157,8 +158,6 @@ export const logout =  async (req,res)=>{
         message:"User log out Sucessfully"
     })
 
-<<<<<<< HEAD
-=======
 }
 
 export const deleteUser = async(req,res)=>{
@@ -200,5 +199,4 @@ export const deleteUser = async(req,res)=>{
     }
     
    
->>>>>>> db0bbde (adding llm api and rate limiting to users routes)
 }

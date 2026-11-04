@@ -7,14 +7,15 @@ const client = createClient({
     password: process.env.REDIS_PASSWORD,
     socket: {
         host:  process.env.REDIS_HOST,
-        port: 13155
+        port:  14189
     }
 });
 
 client.on('error', err => console.log('Redis Client Error', err));
 
 const connectRedis = async()=>{
-    await client.connect().then(()=>console.log("redis connected sucessfully"));
+    await client.connect().then(()=>console.log("redis connected sucessfully"))
+    .catch((err)=>console.log(err.message));
 }
 
 

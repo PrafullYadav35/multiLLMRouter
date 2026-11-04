@@ -2,9 +2,13 @@ import express from "express"
 
 import checkLogin from "../middleware/authMiddleware.js";
 import { getMessages,sendMessage } from "../controllers/messageController.js";
+import {authenticatedRateLimiter} from "../middleware/authenticatedRateLimiter.js"
+
 const messageRouter = express.Router();
 //DOUBT : express.Router() is function ?
 messageRouter.use(checkLogin)
+messageRouter.use(authenticatedRateLimiter);
+
 messageRouter.get("/:chatId",getMessages)
 messageRouter.post("/:chatId",sendMessage);
 export default messageRouter;
