@@ -5,6 +5,7 @@ import User from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import { signUpSchemna,loginSchema } from "../validators/userValidators.js";
+import { client } from "../config/redis.js";
 
 // import  jwt from "jsonwebtoken";
 // import { configDotenv } from "dotenv";
@@ -101,12 +102,15 @@ export const login = async (req,res)=>{
             message:"Email and Password are required "
         });
     }
+
     //is user exist in db
     const user =await User.findOne({email});
     if(!user){
      return res.status(401).json({message:"Incorrect username or Pssword"});
  
     }
+
+
     //is password correct
     // console.log(user);
     const  compare = await bcrypt.compare(password,user.password);
@@ -114,12 +118,17 @@ export const login = async (req,res)=>{
      return res.status(401).json({message:"Incorrect username or Password"});
     }
      
+
     //generate token 
     const token = createToken(user._id);
  
  
+
     //send token as cookie 
     res.cookie("token",token,cookieOptions);
+
+
+
     //show logged in 
      
     req.user= user;
@@ -130,6 +139,9 @@ export const login = async (req,res)=>{
         });
     }
  }
+
+
+
 
  export const getProfile= async (req,res)=>{
   try{
@@ -148,12 +160,38 @@ export const login = async (req,res)=>{
 }
 
 
+
 export const logout =  async (req,res)=>{
+    //block token in by adding in redis so anyone do not use that token after user logout 
+
+    console.log(req.payload);
+
+     if(req.token){
+        const token = req.token;
+        const payload = req.payload;
+
+        //ttl = payloadTime - currentTime 
+        const currentTime= Date.now()/1000;
+        const remainingTime= payload.exp - currentTime;
+
+        if(remainingTime >0){
+            await client.set(`blockList:${token}`,"blocked",{
+               EX:remainingTime,
+            });
+        }
+     
+     }
+
+
+
     //brouser pr cookie delete kr dena
     res.clearCookie("token",{
         httpOnly:false,
         secure:false,
     })
+
+   
+
     res.json({
         message:"User log out Sucessfully"
     })
