@@ -2,16 +2,18 @@ import express from "express";
 import Chat from "../models/chatSchema.js";
 import Message from "../models/messageSchema.js";
 import mongoose from "mongoose";
+import { configDotenv } from "dotenv";
 
 import { generateAIResponse } from "../services/openRouterService.js";
 import { updateSummaryIfNeeded } from "../services/summaryService.js";
 import {buildMessagesForAi} from "../utills/chatMessages.js"
-import {resetUsageIfNeeded, hasTokenLimitReached,adduserTokenUsage}  from "../utills/userUsage.js";
+import {resetUsageIfNeeded,adduserTokenUsage}  from "../utills/userUsage.js";
 
 
-  import { addChatTokenUsage } from "../utills/tokenUsage.js";
+import { addChatTokenUsage } from "../utills/tokenUsage.js";
+import { client } from "../config/redis.js";
 
-
+configDotenv();
 
 
 
@@ -74,12 +76,12 @@ export const sendMessage=async (req,res)=>{
 
          await resetUsageIfNeeded(req.user);
        
-         if(hasTokenLimitReached(req.user)){
-            return res.status(429).json({
-                message: "Token limit reached. Please try after some time.",
-                usage: req.user.usage,
-              });
-         }
+        //  if(hasTokenLimitReached(req.user)){
+        //     return res.status(429).json({
+        //         message: "Token limit reached. Please try after some time.",
+        //         usage: req.user.usage,
+        //       });
+        //  }
 
        //global chat variable 
        let chat;
@@ -111,10 +113,10 @@ export const sendMessage=async (req,res)=>{
          }else{
             //if chat id already exist 
 
-        const chat = await Chat.findOne({
-            _id:chatId,
-            userId:req.user._id,
-        })
+        // const chat = await Chat.findOne({
+        //     _id:chatId,
+        //     userId:req.user._id,
+        // })
 
             // if(mongoose.Types.ObjectId.isValid(chatId)){
             //     return res.status(400).json({
@@ -191,8 +193,26 @@ export const sendMessage=async (req,res)=>{
             chat.topic =content.trim().slice(0,50);
 
         }
+
         await addChatTokenUsage(chat, usage);
         await adduserTokenUsage(req.user, usage.totalTokens);
+
+       //counting used token of llm api 
+
+
+       const key = `token-used:${req.userId}`;
+       const totalTokenMessage = usage.totalTokens;
+
+       const tUsage =await client.get(key);
+       if(tUsage==null){
+             await client.set(key,totalTokenMessage,{
+                EX:Number(process.env.TOKEN_WINDOW_SECONDS)
+             })
+       }else{
+          await client.incr(key,totalTokenMessage);
+       }
+
+       
 
         await chat.save();
 
@@ -210,7 +230,7 @@ export const sendMessage=async (req,res)=>{
       
 
     } catch(err){
-        console.log(err.message );
+        console.log(err.message);
         console.log(err.stack)
         res.status(500).json({
             message:"Internal server error "

@@ -11,11 +11,15 @@ const checkLogin= async (req,res,next)=>{
     if(!token){
         return res.status(401).json({message:"Please login then try "})
     }
+
+
     // console.log(token);
     // console.log(req.cookies);
     const payload= jwt.verify(token,process.env.JWT_SECRET_KEY);
     console.log("hey from auth middleware")
     console.log(payload);
+
+
 
     // It should check whether the token is blocked before accepting it.
      const blockToken = await client.get(`blockList:${token}`);
@@ -29,20 +33,21 @@ const checkLogin= async (req,res,next)=>{
 
 
    
-    const user = await User.findById(payload.id);
-    if(!user){
-        return res.status(401).json({
-            message:"User no longer exist",
-        })
-    }
-    req.user=user;
+    // const user = await User.findById(payload.id);
+
+    // if(!user){
+    //     return res.status(401).json({
+    //         message:"User no longer exist",
+    //     })
+    // }
+    req.userId=payload.id;
     req.token=token;
     req.payload=payload;
     next();
 
 
  }catch(error){
-    console.log(error.message)
+    console.log("eror in checkLogin middleware",error.message)
     res.status(401).json({
         message:"Invalid or expired Token"
     })

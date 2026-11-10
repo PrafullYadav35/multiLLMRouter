@@ -11,9 +11,11 @@ export const resetUsageIfNeeded = async (user)=>{
 
 //check user token limit 
 
-export const hasTokenLimitReached = (user)=>{
-    return user.usage.tokenUsed>= user.usage.tokenLimit;
-}
+// export const hasTokenLimitReached = (user)=>{
+//     return user.usage.tokenUsed>= user.usage.tokenLimit;
+// }
+
+
 
 //increases user  Token  count after chat with ai 
 

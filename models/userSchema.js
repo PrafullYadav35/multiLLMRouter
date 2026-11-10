@@ -19,15 +19,15 @@ const userSchema = new mongoose.Schema({
         require:true
     },
     usage:{
-        tokenUsed:{
-            type:Number,
-            default:0,
+        // tokenUsed:{
+        //     type:Number,
+        //     default:0,
             
-        },
-        tokenLimit:{
-            type:Number,
-            default:10000,
-        },
+        // },
+        // tokenLimit:{
+        //     type:Number,
+        //     default:10000,
+        // },
         resetAt:{
            type:Date,
            default:()=> new Date(Date.now()+5*60)

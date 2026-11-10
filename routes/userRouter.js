@@ -8,7 +8,7 @@ import { signValid } from "../middleware/signupValidate.js";
 import { loginValid } from "../middleware/loginValidate.js";
 import {unauthenticatedRateLimiter} from "../middleware/unauthenticatedRateLimiter.js";
 import {authenticatedRateLimiter}  from "../middleware/authenticatedRateLimiter.js";
-
+import {loadUser} from "../middleware/loadUser.js"
 import {tokenVerify} from "../middleware/tokenVerify.js"
 
 
@@ -18,10 +18,10 @@ userRouter.post("/login",unauthenticatedRateLimiter,loginValid,login);
 
   //first using check is user logged in 
  
-userRouter.get("/profile",tokenVerify,checkLogin,authenticatedRateLimiter,getProfile);
+userRouter.get("/profile",checkLogin,authenticatedRateLimiter,loadUser,getProfile);
 
-userRouter.get("/logout",tokenVerify,checkLogin,authenticatedRateLimiter,logout);
+userRouter.get("/logout",tokenVerify,checkLogin,authenticatedRateLimiter,loadUser,logout);
 
-userRouter.get("/delete",tokenVerify,checkLogin,authenticatedRateLimiter,deleteUser);
+userRouter.get("/delete",tokenVerify,checkLogin,authenticatedRateLimiter,loadUser,deleteUser);
 
 export {userRouter};

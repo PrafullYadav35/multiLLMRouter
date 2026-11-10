@@ -4,12 +4,16 @@ import { createChat,getRecentChats,getSingleChat,deleteChat } from "../controlle
 import checkLogin from "../middleware/authMiddleware.js"
 import {authenticatedRateLimiter} from "../middleware/authenticatedRateLimiter.js"
 
+import {loadUser} from "../middleware/loadUser.js"
 
 
 chatRouter.use(checkLogin);
+
 chatRouter.use(authenticatedRateLimiter);
+chatRouter.use(loadUser);
 
 chatRouter.post('/',createChat);
+
 chatRouter.get("/",getRecentChats);
 chatRouter.get("/:chatId",getSingleChat);
 chatRouter.delete("/:chatId",deleteChat);

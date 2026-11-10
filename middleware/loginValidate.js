@@ -10,7 +10,6 @@ if(!result.success){
         }
       )
 }else{
-
     const{email,pasword}= req.body;
 }
 next()
